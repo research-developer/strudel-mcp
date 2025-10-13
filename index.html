@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beats n Codes - Live Ambient Music</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        #codeDisplay {
+            width: 100%;
+            min-height: 200px;
+            background: #0a0a0a;
+            border: 2px solid #00ff00;
+            padding: 15px;
+            font-size: 14px;
+            overflow-y: auto;
+            margin: 20px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+        }
+        
+        #status {
+            text-align: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: #0a0a0a;
+            border-radius: 5px;
+            border: 1px solid #00ff00;
+            font-size: 18px;
+        }
+        
+        .info {
+            background: #0a0a0a;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #00ff00;
+            border-radius: 3px;
+        }
+        
+        .pulse {
+            animation: pulse 1s ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 BEATS N CODES 🎵</h1>
+        
+        <div class="info">
+            <strong>🤖 Fully Automated:</strong> When Claude edits patterns.js, this page automatically detects changes and updates the music live. Just sit back and listen to the evolution!
+        </div>
+        
+        <div id="status">🎵 Click anywhere to start (browser requires user interaction)</div>
+        
+        <div id="codeDisplay">Loading pattern...</div>
+    </div>
+
+    <script>
+        let currentPattern = null;
+        let lastContent = '';
+        let isPlaying = false;
+        let scheduledEvents = [];
+        
+        const statusEl = document.getElementById('status');
+        const codeDisplayEl = document.getElementById('codeDisplay');
+        
+        // Start audio on user interaction
+        document.addEventListener('click', async () => {
+            if (!isPlaying) {
+                statusEl.textContent = '🎵 Starting audio engine...';
+                await Tone.start();
+                console.log('Audio context started');
+                isPlaying = true;
+                // Give it a moment to fully initialize
+                setTimeout(() => {
+                    loadAndPlay();
+                }, 100);
+            }
+        }, { once: true });
+        
+        // Clear current playing pattern
+        function stopCurrentPattern() {
+            Tone.Transport.stop();
+            Tone.Transport.cancel();
+            // Stop and dispose all loops
+            scheduledEvents.forEach(loop => {
+                if (loop && loop.stop) {
+                    loop.stop();
+                    loop.dispose();
+                }
+            });
+            scheduledEvents = [];
+        }
+        
+        // Play pattern using Tone.js
+        async function playPattern(pattern) {
+            // Make sure audio context is running
+            if (Tone.context.state !== 'running') {
+                await Tone.context.resume();
+            }
+            
+            stopCurrentPattern();
+            
+            // Wait a moment for cleanup
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // Set BPM
+            Tone.Transport.bpm.value = pattern.bpm || 60;
+            console.log('Setting BPM to', Tone.Transport.bpm.value);
+            
+            // Create and schedule chords
+            if (pattern.chords) {
+                const chordSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: 'sawtooth' },
+                    envelope: { attack: 1, decay: 2, sustain: 0.5, release: 3 }
+                });
+                const filter = new Tone.Filter(pattern.chords.filter || 800, 'lowpass');
+                chordSynth.chain(filter, Tone.Destination);
+                chordSynth.volume.value = -12;
+                
+                let chordIndex = 0;
+                const chordLoop = new Tone.Loop((time) => {
+                    const chord = pattern.chords.progression[chordIndex % pattern.chords.progression.length];
+                    chordSynth.triggerAttackRelease(chord, '2m', time);
+                    chordIndex++;
+                }, '4m').start(0);
+                
+                scheduledEvents.push(chordLoop);
+                console.log('Chord synth created and scheduled');
+            }
+            
+            // Create and schedule melody
+            if (pattern.melody) {
+                const melodySynth = new Tone.Synth({
+                    oscillator: { type: pattern.melody.waveform || 'triangle' },
+                    envelope: { attack: 0.5, decay: 1, sustain: 0.3, release: 2 }
+                });
+                const delay = new Tone.FeedbackDelay(pattern.melody.delay || 0.5, 0.3);
+                melodySynth.chain(delay, Tone.Destination);
+                melodySynth.volume.value = -18;
+                
+                let melodyIndex = 0;
+                const melodyLoop = new Tone.Loop((time) => {
+                    const note = pattern.melody.notes[melodyIndex % pattern.melody.notes.length];
+                    if (note !== '~') {
+                        melodySynth.triggerAttackRelease(note, '1m', time);
+                    }
+                    melodyIndex++;
+                }, '2m').start(0);
+                
+                scheduledEvents.push(melodyLoop);
+                console.log('Melody synth created and scheduled');
+            }
+            
+            // Create and schedule drums
+            if (pattern.drums) {
+                const kick = new Tone.MembraneSynth().toDestination();
+                kick.volume.value = -10;
+                
+                const snare = new Tone.NoiseSynth({
+                    noise: { type: 'white' },
+                    envelope: { attack: 0.001, decay: 0.2, sustain: 0 }
+                }).toDestination();
+                snare.volume.value = -15;
+                
+                // Schedule kicks
+                const kickPattern = pattern.drums.kick;
+                kickPattern.forEach((hit, i) => {
+                    if (hit === 1) {
+                        const kickLoop = new Tone.Loop((time) => {
+                            kick.triggerAttackRelease('C1', '8n', time);
+                        }, '4m').start(i * Tone.Time('4m').toSeconds() / kickPattern.length);
+                        scheduledEvents.push(kickLoop);
+                    }
+                });
+                
+                // Schedule snares
+                const snarePattern = pattern.drums.snare;
+                snarePattern.forEach((hit, i) => {
+                    if (hit === 1) {
+                        const snareLoop = new Tone.Loop((time) => {
+                            snare.triggerAttackRelease('8n', time);
+                        }, '4m').start(i * Tone.Time('4m').toSeconds() / snarePattern.length);
+                        scheduledEvents.push(snareLoop);
+                    }
+                });
+                
+                console.log('Drum synths created and scheduled');
+            }
+            
+            // Start transport
+            Tone.Transport.start();
+            console.log('Transport started, BPM:', Tone.Transport.bpm.value);
+        }
+        
+        // Load pattern from file
+        async function loadAndPlay() {
+            if (!isPlaying) return;
+            
+            try {
+                const response = await fetch('./patterns.js?' + Date.now());
+                const code = await response.text();
+                
+                // Only update if content changed
+                if (code === lastContent) {
+                    return;
+                }
+                
+                lastContent = code;
+                codeDisplayEl.textContent = code;
+                
+                // Evaluate the pattern code (strip comments first)
+                const cleanCode = code.replace(/\/\/.*$/gm, '').trim();
+                currentPattern = eval('(' + cleanCode + ')');
+                
+                // Flash status
+                statusEl.className = 'pulse';
+                statusEl.textContent = '🔄 Loading new pattern...';
+                
+                // Play the pattern
+                await playPattern(currentPattern);
+                
+                setTimeout(() => {
+                    statusEl.className = '';
+                    statusEl.textContent = '🎵 Playing live! (BPM: ' + (currentPattern.bpm || 60) + ')';
+                }, 500);
+                
+            } catch (err) {
+                statusEl.textContent = '❌ Error: ' + err.message;
+                console.error('Pattern error:', err);
+            }
+        }
+        
+        // Poll for changes every 2 seconds
+        setInterval(() => {
+            if (isPlaying) loadAndPlay();
+        }, 2000);
+    </script>
+</body>
+</html>
