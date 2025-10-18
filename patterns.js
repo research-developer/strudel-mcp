@@ -1,4 +1,4 @@
-// 🎵 BEATS N CODES - Ambient Pattern (Tone.js format)
+// 🎵 STRUDEL-MCP - Ambient Pattern (Tone.js format)
 // Edit 2: Opening up the filter, darker chords
 // TIMESTAMP: 2025-10-13 @ 21:47:30
 

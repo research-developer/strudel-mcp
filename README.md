@@ -27,7 +27,7 @@ The patterns.js file uses Strudel mini-notation:
 
 ## 🔄 Workflow
 
-1. Tell Claude what kind of beat you want
+1. Tell Claude what kind of pattern you want
 2. Claude edits `patterns.js`
 3. Click "Reload Pattern" in your browser
 4. Enjoy the new groove!
