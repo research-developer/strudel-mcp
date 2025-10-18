@@ -1,4 +1,4 @@
-# 🎵 Beats n Codes
+# 🎵 Strudel MCP
 
 Live music coding environment using Strudel!
 

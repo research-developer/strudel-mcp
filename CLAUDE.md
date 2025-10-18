@@ -1,4 +1,4 @@
-# 🎵 CLAUDE.md - AI Agent Guide for Beats n Codes
+# 🎵 CLAUDE.md - AI Agent Guide for Strudel MCP
 
 ## Project Overview
 This is a **live ambient music coding environment** where you (an AI agent) can edit pattern files and the user hears changes in real-time through their browser. No manual intervention required from the user!
@@ -13,7 +13,7 @@ This is a **live ambient music coding environment** where you (an AI agent) can 
 
 ### File Structure
 ```
-beat-n-codes/
+strudel-mcp/
 ├── index.html        # Web interface with Tone.js player
 ├── patterns.js       # EDIT THIS FILE to change the music
 ├── README.md         # User-facing documentation
@@ -23,7 +23,7 @@ beat-n-codes/
 ## Your Job: Editing Patterns
 
 ### Location
-Edit the file: `/Users/preston/Projects/beat-n-codes/patterns.js`
+Edit the file: `/Users/preston/Projects/strudel-mcp/patterns.js`
 
 ### Pattern Format
 The pattern is a JavaScript object with these properties:
