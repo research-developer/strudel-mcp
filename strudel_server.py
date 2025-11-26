@@ -132,6 +132,7 @@ You have access to tools that let you:
 - Get music theory suggestions (strudel_suggest_modifications)
 - Validate patterns before applying (strudel_validate_pattern)
 - Edit patterns (strudel_edit_pattern)
+- Schedule delayed changes (strudel_schedule_change)
 
 The user is listening to music in their browser that updates automatically when you change patterns.js.
 Be creative, musical, and responsive to their requests. When making changes, explain what you're doing
@@ -143,7 +144,8 @@ and why it will affect the sound.""",
             "strudel_validate_pattern",
             "strudel_edit_pattern",
             "strudel_get_pattern_info",
-            "strudel_suggest_modifications"
+            "strudel_suggest_modifications",
+            "strudel_schedule_change"
         ],
 
         # Configure MCP servers

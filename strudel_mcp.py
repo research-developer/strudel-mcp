@@ -14,6 +14,7 @@ import json
 import os
 import re
 import shutil
+import httpx
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
@@ -1121,6 +1122,62 @@ async def strudel_suggest_modifications(params: SuggestModificationsInput) -> st
         return f"Error: {str(e)}"
     except Exception as e:
         return f"Error: Unexpected error generating suggestions: {str(e)}"
+
+
+class ScheduleChangeInput(BaseModel):
+    """Input parameters for scheduling a change."""
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True)
+
+    find: str = Field(..., description="Text to find in patterns.js")
+    replace: str = Field(..., description="Text to replace with")
+    delay_seconds: int = Field(..., description="Delay in seconds (0 for immediate)", ge=0)
+    description: str = Field(..., description="Description of the change")
+
+
+@mcp.tool(
+    name="strudel_schedule_change",
+    annotations={
+        "title": "Schedule Pattern Change",
+        "readOnlyHint": False,
+        "destructiveHint": True,
+        "idempotentHint": False,
+        "openWorldHint": False
+    }
+)
+async def strudel_schedule_change(params: ScheduleChangeInput) -> str:
+    """
+    Schedule a pattern change to be executed after a delay.
+
+    This tool sends a request to the main Strudel server to schedule a find/replace operation.
+    Useful for queuing changes or creating timed transitions.
+
+    Args:
+        params (ScheduleChangeInput):
+            - find (str): Text to find
+            - replace (str): Text to replace
+            - delay_seconds (int): Seconds to wait
+            - description (str): What is changing
+
+    Returns:
+        str: Success message with schedule details or error.
+    """
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "http://localhost:8080/api/queue",
+                json=params.model_dump()
+            )
+            response.raise_for_status()
+            result = response.json()
+            
+            return f"✓ Change scheduled! (ID: {result.get('change_id')})\nExecute at: {result.get('execute_at')}\nStatus: {result.get('status')}"
+            
+    except httpx.RequestError as e:
+        return f"Error connecting to server: {str(e)}. Is strudel_server.py running?"
+    except httpx.HTTPStatusError as e:
+        return f"Server returned error: {e.response.text}"
+    except Exception as e:
+        return f"Unexpected error: {str(e)}"
 
 
 # ============================================================================
