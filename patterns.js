@@ -1,33 +1,34 @@
 // 🎵 STRUDEL-MCP - Ambient Pattern (Tone.js format)
-// Edit 2: Opening up the filter, darker chords
-// TIMESTAMP: 2025-10-13 @ 21:47:30
+// Slowed to ambient tempo, added sparse dreamy melody, darker chord progression, minimal drums
+// TIMESTAMP: 2025-11-26 @ 12:36:49
 
 ({
-    bpm: 30,
+    bpm: 52,
     
     chords: {
         progression: [
-            ['C3', 'Eb3', 'G3'],
-            ['Ab3', 'C4', 'Eb4'],
-            ['F3', 'Ab3', 'C4'],
-            ['Bb2', 'D3', 'F3']
+            ['E2', 'G2', 'B2'],
+            ['A2', 'C3', 'E3'],
+            ['D2', 'F2', 'A2'],
+            ['G2', 'B2', 'D3'],
         ],
-        interval: '4m',
+        interval: '2m',
         duration: '2m',
-        filter: 600
+        filter: 280
     },
     
     melody: {
-        notes: ['C5', '~', 'G5', '~', 'Eb5', '~', 'Bb4', '~'],
-        interval: '2m',
-        duration: '1m',
+        notes: ['~', 'B4', '~', '~', 'D5', '~', 'E5', '~', '~', 'G5', '~', '~', '~', 'A5', '~', '~'],
+        interval: '8n',
+        duration: '8n',
         waveform: 'triangle',
-        delay: 0.5
-    },
+        delay: 0.6
+    }
+,
     
     drums: {
         kick: [1, 0, 0, 0, 0, 0, 0, 0],
         snare: [0, 0, 0, 0, 0, 0, 1, 0],
-        interval: '4m'
+        interval: '1m'
     }
 })
