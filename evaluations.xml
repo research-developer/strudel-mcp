@@ -1,0 +1,51 @@
+<evaluation>
+  <qa_pair>
+    <question>How many unique musical notes (excluding rests/silences) are used across BOTH the chord progression AND the melody in the current pattern? Count each unique note only once, regardless of how many times it appears. Answer with just the number.</question>
+    <answer>13</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>In the current pattern, what is the melody density expressed as a percentage? Melody density is the percentage of melody steps that contain actual notes (not silence markers). Answer with just the number followed by a percent sign (e.g., "75%").</question>
+    <answer>50%</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>According to the pattern analysis, what is the EXACT tempo description for the current BPM? Answer with the exact text of the tempo description.</question>
+    <answer>Very Slow - Meditative</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>If you wanted to make the current pattern sound "spacious" according to music theory principles, by how many BPM points should the tempo be DECREASED from its current value? Consider the suggestions for the "spacious" mood. Answer with just the number of BPM points to decrease.</question>
+    <answer>10</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>In the current pattern's drum section, what is the total number of combined kick AND snare hits per complete drum cycle? Add the total kick hits to the total snare hits. Answer with just the number.</question>
+    <answer>2</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>What is the filter cutoff frequency (in Hz) of the current pattern's chords section? Answer with just the number.</question>
+    <answer>600</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>Based on the current filter cutoff frequency, what is the sonic character description? Choose from: "Very warm and dark", "Warm and mellow", "Balanced", "Bright and open", or "Very bright and airy". Answer with the exact text.</question>
+    <answer>Warm and mellow</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>In the current pattern, how many chords are in the complete chord progression? Count each chord array as one chord. Answer with just the number.</question>
+    <answer>4</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>What waveform type is currently being used for the melody synthesizer? Answer with the exact waveform name in lowercase.</question>
+    <answer>triangle</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>According to music theory suggestions for making the pattern "darker", what would be the recommended NEW filter cutoff frequency if you started from the current filter value? Look for the specific Hz value suggested. Answer with just the number.</question>
+    <answer>400</answer>
+  </qa_pair>
+</evaluation>
