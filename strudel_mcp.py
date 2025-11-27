@@ -1163,8 +1163,11 @@ async def strudel_schedule_change(params: ScheduleChangeInput) -> str:
     """
     try:
         async with httpx.AsyncClient() as client:
+            # Use configurable URL or default
+            api_url = os.environ.get("STRUDEL_API_URL", "http://localhost:8080/api/queue")
+            
             response = await client.post(
-                "http://localhost:8080/api/queue",
+                api_url,
                 json=params.model_dump()
             )
             response.raise_for_status()

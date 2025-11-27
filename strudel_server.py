@@ -12,7 +12,7 @@ The agent has access to the Strudel MCP server for controlling music patterns.
 """
 
 import asyncio
-import json
+
 import os
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -20,9 +20,7 @@ from typing import List, Optional, Dict, Any
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
@@ -40,6 +38,7 @@ PATTERNS_FILE = PROJECT_DIR / "patterns.js"
 # Global state
 scheduler = AsyncIOScheduler()
 change_queue: List[Dict[str, Any]] = []
+change_id_counter: int = 0
 claude_client: Optional[ClaudeSDKClient] = None
 SERVER_PORT = 8080
 
@@ -266,7 +265,9 @@ def schedule_change(change: QueuedChange) -> Dict[str, Any]:
         Dict with change ID and scheduled time
     """
     # Generate unique ID
-    change_id = len(change_queue)
+    global change_id_counter
+    change_id_counter += 1
+    change_id = change_id_counter
 
     # Calculate execution time
     execute_at = datetime.now() + timedelta(seconds=change.delay_seconds)
