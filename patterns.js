@@ -1,6 +1,6 @@
 // 🎵 STRUDEL-MCP - Ambient Pattern (Tone.js format)
-// Slowed to ambient tempo, added sparse dreamy melody, darker chord progression, minimal drums
-// TIMESTAMP: 2025-11-26 @ 12:36:49
+// Removed delay from melody
+// TIMESTAMP: 2025-11-26 @ 12:55:42
 
 ({
     bpm: 52,
@@ -22,7 +22,7 @@
         interval: '8n',
         duration: '8n',
         waveform: 'triangle',
-        delay: 0.6
+        delay: 0
     }
 ,
     
